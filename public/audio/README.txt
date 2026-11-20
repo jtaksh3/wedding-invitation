@@ -1,0 +1,1 @@
+Place a properly licensed or user-provided instrumental MP3 here named wedding-instrumental.mp3. The site attempts to start it automatically when opened; browser autoplay policies may require guests to tap the music button. The button can also pause or resume playback.

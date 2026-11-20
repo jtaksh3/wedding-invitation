@@ -1,0 +1,1 @@
+For true real-time 3D character rotation, place a rigged GLB model here as couple.glb. The current floating couple companion uses the generated character artwork with gentle motion; it is not a full 3D model. A GLB integration can be added once a rigged model is available.
