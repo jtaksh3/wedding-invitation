@@ -16,7 +16,7 @@ Open http://localhost:3000.
 ## Deploy to GitHub Pages
 Push to the `main` branch to run `.github/workflows/deploy.yml`, or start it from the Actions tab. In the repository's **Settings → Pages**, set the build and deployment source to **GitHub Actions**. The workflow derives the Pages base path from the repository name, including root paths for `*.github.io` repositories.
 
-GitHub Pages is static hosting and does not run Next.js API routes. The wishes form therefore saves wishes in the visitor's browser only; they are not sent to the couple or shared across devices. A backend or hosted form service is needed to collect wishes centrally.
+GitHub Pages is static hosting and does not run Next.js API routes. The wishes form sends submissions to the Formspree endpoint configured in `src/config/site.ts`, then keeps a local copy in the visitor's browser.
 
 ## Personalise
 Edit `src/config/wedding.ts`:
@@ -29,7 +29,7 @@ Edit `src/config/wedding.ts`:
 The defaults are clearly marked sample placeholders. Replace them before publishing.
 
 ## Wishes
-The wishes form stores messages in the visitor's browser `localStorage`. It does not send messages to you or share them across guests. To collect wishes centrally, connect `src/lib/wishes.ts` to a hosted backend or form service.
+The wishes form sends messages to the Formspree endpoint configured in `src/config/site.ts` and stores a successful submission in the visitor's browser `localStorage`. Configure the destination email and notification settings in the Formspree dashboard.
 
 ## Character animation note
 This starter uses the supplied generated character artwork with Framer Motion for entrance, floating, hover, and interaction transitions. It is not a rigged 3D model and does not contain genuine skeletal animation. For fully articulated walking/dancing, add a rigged GLB model with animation clips or transparent WebM clips under `public/animations/` and wire them into `CoupleCharacter`.

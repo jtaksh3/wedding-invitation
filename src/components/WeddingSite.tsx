@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { CalendarDays, MapPin, Heart, Menu, X, Send, ArrowRight, Music2, Volume2 } from "lucide-react";
 import AnimatedCoupleVideo, { HeroCoupleVideo } from "./AnimatedCoupleVideo";
 import { wedding } from "@/config/wedding";
-import { publicAsset } from "@/config/site";
+import { publicAsset, wishesFormEndpoint } from "@/config/site";
 import { getWishes, submitWish, type Wish } from "@/lib/wishes";
 
 const nav = [{ label: "Home", id: "home" }, { label: "Invitation", id: "invitation" }, { label: "Events", id: "events" }, { label: "Venue", id: "venue" }, { label: "Wishes", id: "wishes" }];
@@ -130,7 +130,31 @@ export default function WeddingSite() {
     }
 
     try {
-      setStatus("Saving your wishes on this device...");
+      setStatus("Sending your wishes...");
+      const response = await fetch(wishesFormEndpoint, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          message: message.trim(),
+          _subject: `Wedding wish from ${name.trim()}`,
+        }),
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Unable to send your wishes. Please try again.";
+        try {
+          const result = await response.json();
+          if (typeof result.error === "string") errorMessage = result.error;
+        } catch {
+          // Keep the user-facing fallback when the service returns no JSON body.
+        }
+        throw new Error(errorMessage);
+      }
+
       await submitWish(name.trim(), message.trim());
 
       setWishes(getWishes());
@@ -139,7 +163,7 @@ export default function WeddingSite() {
       setName("");
       setMessage("");
 
-      setStatus("Your wishes were saved on this device. Thank you ❤️");
+      setStatus("Your wishes have been sent to the couple. Thank you ❤️");
 
     } catch (error) {
       console.error("Send wish error:", error);
@@ -230,7 +254,7 @@ export default function WeddingSite() {
             <label htmlFor="guest-message">Your message</label><textarea id="guest-message" value={message} onChange={e => setMessage(e.target.value)} maxLength={500} rows={4} placeholder="Write your blessings..." required/>
             <button className="button button--maroon" type="submit"><Send size={16}/> Send Wishes</button>
             <p className="form-status" role="status">{status}</p>
-            <p className="privacy-note">Wishes are saved only in this browser and are not sent to the couple. ❤️</p>
+            <p className="privacy-note">Your wishes are sent privately to the couple. ❤️</p>
           </form>
         </div>
         {showWishes && wishes.length > 0 && <div className="recent-wishes"><h3><Heart size={16}/> Wishes saved on this device</h3><div>{wishes.slice(0, 3).map((w, i) => <article key={`${w.createdAt}-${i}`}><b>{w.name}</b><p>{w.message}</p></article>)}</div></div>}
